@@ -29,30 +29,4 @@ Dicas:
 - Utilizar cache de (5m) no endpoint de top músicas ouvidas, pois
   seria uma busca custosa
 
-  Tabelas:
-  user{
-  id
-  amigos:user[],
-  playlists:playlist[]
-  }
-  playlist{
-  id
-  nome
-  musicas:musica[]
-  }
-  interacao{
-  id
-  idUser
-  idMusica
-  play
-  like
-  }
 
-  musica{
-  id
-  nome
-  data
-  url
-  genero
-  interacao:[]
-  }
