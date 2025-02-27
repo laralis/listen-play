@@ -1,5 +1,6 @@
 import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
+import mail from '@adonisjs/mail/services/main'
 
 export default class UsersController {
   async index({}: HttpContext) {
@@ -9,6 +10,15 @@ export default class UsersController {
 
   async store({ request }: HttpContext) {
     const user = request.body()
+    if (user.type === 'customer') {
+      await mail.send((message) => {
+        message
+          .to(user.email)
+          .from('listen_play@mail.com')
+          .subject('Welcome to ListenPlay')
+          .htmlView('emails/welcome', { name: user.name })
+      })
+    }
     return await User.create(user)
   }
 

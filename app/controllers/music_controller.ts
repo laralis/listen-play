@@ -1,9 +1,27 @@
 import Music from '#models/music'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default class MusicController {
-  async index({}: HttpContext) {
-    const musics = await Music.all()
+  async index({ request }: HttpContext) {
+    const gender = request.input('gender')
+    const top5 = request.input('top5')
+    const top5musics = db
+      .from('musics')
+      .join('interactions', 'musics.id', '=', 'interactions.music_id')
+      .groupBy('musics.id')
+      .sum('interactions.play', 'played_times')
+      .orderBy('played_times', 'desc')
+      .select('musics.name', 'musics.gender', 'musics.author')
+
+    const musics = await Music.query().where((builder) => {
+      if (gender) {
+        builder.where('gender', 'LIKE', `${gender}%`)
+      }
+    })
+    if (top5) {
+      return top5musics
+    }
     return musics
   }
 
@@ -27,6 +45,5 @@ export default class MusicController {
   async destroy({ params }: HttpContext) {
     const music = await Music.findOrFail(+params.id)
     await music.delete()
-    return
   }
 }

@@ -6,12 +6,25 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('play').unsigned()
+      table.integer('play').unsigned().defaultTo(1)
       table.boolean('like').nullable()
-      table.integer('music_id').unsigned().references('id').inTable('musics').onDelete('CASCADE')
-      table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
+      table
+        .integer('music_id')
+        .unsigned()
+        .references('id')
+        .inTable('musics')
+        .onDelete('CASCADE')
+        .notNullable()
+      table
+        .integer('user_id')
+        .unsigned()
+        .references('id')
+        .inTable('users')
+        .onDelete('CASCADE')
+        .notNullable()
       table.timestamp('created_at')
       table.timestamp('updated_at')
+      table.unique(['user_id', 'music_id'])
     })
   }
 

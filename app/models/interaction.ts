@@ -15,10 +15,16 @@ export default class Interaction extends BaseModel {
   declare like: boolean
 
   @belongsTo(() => Music)
-  declare musicId: BelongsTo<typeof Music>
+  declare music: BelongsTo<typeof Music>
+
+  @column()
+  declare musicId: number
 
   @belongsTo(() => User)
-  declare userId: BelongsTo<typeof User>
+  declare user: BelongsTo<typeof User>
+
+  @column()
+  declare userId: number
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

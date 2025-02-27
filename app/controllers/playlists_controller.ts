@@ -32,11 +32,16 @@ export default class PlaylistsController {
 
   async musics({ auth, request }: HttpContext) {
     const user = auth.user!
-
     const { playlistId, musicId } = request.all()
-
-    const playlist = await Playlist.query().where({ userId: 1, playlistId }).firstOrFail()
-
+    const playlist = await Playlist.query().where({ userId: 1, id: playlistId }).firstOrFail()
     await playlist.related('musics').attach([musicId])
+    return playlist
+  }
+
+  async getMusics({ params }: HttpContext) {
+    const playlist = await Playlist.query()
+      .where('id', params.id)
+      .with('musics', (builder) => builder.select('name'))
+    return playlist
   }
 }

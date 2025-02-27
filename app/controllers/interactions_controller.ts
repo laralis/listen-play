@@ -1,9 +1,19 @@
 import Interaction from '#models/interaction'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 
 export default class InteractionsController {
-  async index() {
-    const interactions = await Interaction.all()
+  async index({ request }: HttpContext) {
+    const top5 = request.input('top5')
+    const interactions = db
+      .from('interactions')
+      .join('musics', 'musics.id', '=', 'interactions.music_id')
+      .select('musics.name')
+      .select('interactions.*')
+    if (top5) {
+      interactions.orderBy('play', 'desc').limit(5)
+    }
+
     return interactions
   }
 

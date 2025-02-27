@@ -25,6 +25,8 @@ export default class extends BaseSeeder {
     })
     await Interaction.create({
       play: 3,
+      musicId: 1,
+      userId: 1,
     })
   }
 }
