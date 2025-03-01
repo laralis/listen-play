@@ -37,7 +37,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
     relatedKey: 'id',
     pivotRelatedForeignKey: 'friend_id',
   })
-  declare friendsList: ManyToMany<typeof User>
+  declare friends: ManyToMany<typeof User>
 
   @hasMany(() => Playlist)
   declare playlists: HasMany<typeof Playlist>

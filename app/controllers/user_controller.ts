@@ -1,5 +1,6 @@
 import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
+import db from '@adonisjs/lucid/services/db'
 import mail from '@adonisjs/mail/services/main'
 
 export default class UsersController {
@@ -37,6 +38,14 @@ export default class UsersController {
   async destroy({ params }: HttpContext) {
     const user = await User.findOrFail(+params.id)
     user.delete()
-    return
+  }
+
+  async topListener({}: HttpContext) {
+    const user = await db
+      .from('interactions')
+      .select('user_id', db.raw('count(interactions.id) as value'))
+      .groupBy('user_id')
+
+    return user
   }
 }

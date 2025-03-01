@@ -7,41 +7,15 @@ export default class PlaylistsController {
     return playlists
   }
 
-  async store({ request }: HttpContext) {
-    const playlists = await Playlist.create(request.body())
-    return playlists
-  }
-
   async show({ params }: HttpContext) {
-    const playlist = await Playlist.findOrFail(+params.id)
-    return playlist
-  }
-
-  async update({ params, request }: HttpContext) {
-    const playlist = await Playlist.findOrFail(+params.id)
-    playlist.merge(request.body())
-    await playlist.save()
-    return playlist
-  }
-
-  async destroy({ params }: HttpContext) {
-    const playlist = await Playlist.findOrFail(+params.id)
-    await playlist.delete()
-    return
-  }
-
-  async musics({ auth, request }: HttpContext) {
-    const user = auth.user!
-    const { playlistId, musicId } = request.all()
-    const playlist = await Playlist.query().where({ userId: 1, id: playlistId }).firstOrFail()
-    await playlist.related('musics').attach([musicId])
-    return playlist
-  }
-
-  async getMusics({ params }: HttpContext) {
+    const playlistId = params.id
     const playlist = await Playlist.query()
-      .where('id', params.id)
-      .with('musics', (builder) => builder.select('name'))
+      .where({ id: playlistId })
+      .select('id', 'name')
+      .preload('musics', (builder) => {
+        builder.select('id', 'author', 'name')
+      })
+      .firstOrFail()
     return playlist
   }
 }
