@@ -1,4 +1,5 @@
 import Interaction from '#models/interaction'
+import { createInteractionValidator } from '#validators/interaction'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
@@ -18,7 +19,8 @@ export default class InteractionsController {
   }
 
   async store({ request }: HttpContext) {
-    const interactions = await Interaction.create(request.body())
+    const payload = await createInteractionValidator.validate(request.body())
+    const interactions = await Interaction.create(payload)
     return interactions
   }
 
@@ -29,7 +31,8 @@ export default class InteractionsController {
 
   async update({ params, request }: HttpContext) {
     const interaction = await Interaction.findOrFail(+params.id)
-    interaction.merge(request.body())
+    const payload = await createInteractionValidator.validate(request.body())
+    interaction.merge(payload)
     await interaction.save()
     return interaction
   }

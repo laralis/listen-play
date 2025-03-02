@@ -5,7 +5,7 @@ LISTENPLAY
 Perfis:
 
 - Moderador:
-  Tipo de usuário com permissão para adicionar novas músicas (fazer upload); FALTA
+  Tipo de usuário com permissão para adicionar novas músicas (fazer upload);
 - Cliente:
   Tipo de usuário que pode criar playlists e adicionar músicas;
 
@@ -27,4 +27,4 @@ Dicas:
 - Validar modelo de dados antes de começar desenvolvimento;
 - Utilizar boas práticas já aprendidas;
 - Utilizar cache de (5m) no endpoint de top músicas ouvidas, pois
-  seria uma busca custosa FALTA
+  seria uma busca custosa

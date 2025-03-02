@@ -1,4 +1,5 @@
 import Playlist from '#models/playlist'
+import { createPlaylistValidator, updatePlaylistValidator } from '#validators/playlist'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class UserPlaylistController {
@@ -9,7 +10,7 @@ export default class UserPlaylistController {
   }
   async store({ request, auth }: HttpContext) {
     const user = auth.user!
-    const playlist = request.body()
+    const playlist = await createPlaylistValidator.validate(request.body())
     const playlists = await Playlist.create({ ...playlist, userId: user.id })
     return playlists
   }
@@ -17,7 +18,8 @@ export default class UserPlaylistController {
   async update({ params, request, auth }: HttpContext) {
     const user = auth.user!
     const playlist = await Playlist.query().where({ user_id: user.id, id: params.id }).firstOrFail()
-    playlist.merge(request.body())
+    const data = await updatePlaylistValidator.validate(request.body())
+    playlist.merge(data)
     await playlist.save()
     return playlist
   }

@@ -1,4 +1,5 @@
 import User from '#models/user'
+import { createUserValidator, updateUserValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 import mail from '@adonisjs/mail/services/main'
@@ -10,8 +11,8 @@ export default class UsersController {
   }
 
   async store({ request }: HttpContext) {
-    const user = request.body()
-    if (user.type === 'customer') {
+    const user = await createUserValidator.validate(request.body())
+    if (request.body().type === 'customer') {
       await mail.send((message) => {
         message
           .to(user.email)
@@ -30,7 +31,8 @@ export default class UsersController {
 
   async update({ params, request }: HttpContext) {
     const user = await User.findOrFail(+params.id)
-    user.merge(request.body())
+    const payload = await updateUserValidator.validate(request.body())
+    user.merge(payload)
     await user.save()
     return user
   }

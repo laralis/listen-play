@@ -15,7 +15,10 @@ router
   .apiOnly()
   .use(['destroy', 'index', 'show', 'update'], middleware.auth())
 
-router.resource('/musics', '#controllers/music_controller').apiOnly()
+router
+  .resource('/musics', '#controllers/music_controller')
+  .apiOnly()
+  .use(['store', 'update', 'destroy'], middleware.auth())
 
 router.resource('/interactions', '#controllers/interactions_controller').apiOnly()
 
